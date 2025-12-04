@@ -17,7 +17,7 @@ def in_bound(i, j):
     
 
 def count_neighbors(i, j):
-    count = 0 
+    count = 0
     for x in range(i-1, i+2):
         for y in range(j-1, j+2):
             if (x,y) == (i,j):
@@ -25,7 +25,6 @@ def count_neighbors(i, j):
 
             if x < 0 or x > row_size - 1:
                 continue
-
 
             if y < 0 or y > col_size - 1:
                 continue
@@ -46,4 +45,32 @@ def part1():
                 count+=1
     return count
 
+def part2():
+    total = 0
+    new_grid = grid
+    while True:
+        count = 0
+        indices_to_remove = []
+        for i in range(row_size):
+            for j in range(col_size):
+                if new_grid[i][j] != "@":
+                    continue
+                
+                if count_neighbors(i, j) < 4:
+                    indices_to_remove.append((i,j))
+                    count+=1
+
+        if count == 0:
+            break
+
+        for (i,j) in indices_to_remove:
+            line = list(new_grid[i])
+            line[j] = "x"
+            new_grid[i] = ''.join(line)
+        
+        total += count
+    return total
+
+
 print(f"Part 1: {part1()}")
+print(f"Part 2: {part2()}")
