@@ -23,14 +23,45 @@ def part1(ranges: list, ids: list) -> int:
                 continue
 
             if int(num1) <= int(id) <= int(num2):
-                print(f"id is in a range {id}")
-                #current_ids.remove(id)
                 fresh_count.append(id)
 
     return len(fresh_count)
 
-ranges_list, ids_list = get_input(FILE_NAME)
-#print(ids_list)
 
+def parse_ranges(ranges: list[str]) -> list[list[int]]:
+    rng_tuples = []
+    for rng in ranges:
+        num1, num2 = rng.split('-')
+        rng_tuples += [[int(num1), int(num2)]]
+    return rng_tuples
+
+def combine_overlaps(ranges):
+    result = []
+    rng_tuples = parse_ranges(ranges)
+    rng_tuples.sort()
+    result.append(rng_tuples[0])
+
+    for curr_rng in rng_tuples[1:]:
+        last_merged_interval = result[-1]
+        if curr_rng[0] <= last_merged_interval[1]:
+            last_merged_interval[1] = max(curr_rng[1], last_merged_interval[1])
+        else:
+            result.append(curr_rng)
+
+    return result
+
+def part2(ranges: list) -> int:
+    ranges = combine_overlaps(ranges)
+    fresh_count = 0
+    for [one, two] in ranges:
+        possible_count = two + 1 - one
+        fresh_count += possible_count
+    return fresh_count
+
+
+ranges_list, ids_list = get_input(FILE_NAME)
 part1 = part1(ranges_list, ids_list)
 print("Part 1:", part1)
+
+part2 = part2(ranges_list)
+print("Part 2:", part2)
